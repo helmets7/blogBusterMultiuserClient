@@ -1,0 +1,70 @@
+<div class="container mt-5">
+    <div class="row">
+      <div class="col">
+        <h1 class="text-center mb-5">Lista de users</h1>      
+        <div class="col-md text-end d-flex justify-content-center align-items-center mb-3 ">
+          <a [routerLink]="['/admin/user/new']" class="btn btn-primary mx-3">Alta de user</a>
+          <app-search-unrouted [placeHolder]="'Buscar user'" (onSearch)="setFilter( $event )"></app-search-unrouted>
+          <app-dropdown-register-page class="mx-2" [PageSize]="responseFromServer?.numberOfElements"
+            (eeRpp)="this.setRpp($event)">
+          </app-dropdown-register-page>
+        </div>
+        <div class="col-md">
+          <app-pagination-unrouted [nPage]="responseFromServer?.number + 1" [nTotalPages]="responseFromServer?.totalPages"
+            (eePage)="setPage($event)"></app-pagination-unrouted>
+        </div>
+        <div class="col-md text-start">
+          <h5 class="text-muted" *ngIf="strTermFilter!=''">Filtrando por {{strTermFilter}} (borrar para resetear)</h5>
+          <button class="btn btn-outline-danger" *ngIf="id_usertypeFilter!=0" (click)="setFilterByUsertype(0)">
+            <i class="bi bi-x-circle"></i> Reset usertype {{id_usertypeFilter}} filter</button>
+        </div>
+        <div class="col-md text-end">
+          <h5 class="text-muted">Total de registros en la consulta {{responseFromServer?.totalElements}}</h5>
+        </div>
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th (click)="setOrder('id')">ID
+                <div *ngIf="sortField=='id'&&sortDirection=='asc'">^</div>
+                <div *ngIf="sortField=='id'&&sortDirection=='desc'">_</div>
+              </th>
+              <th (click)="setOrder('title')">title
+                <div *ngIf="sortField=='name'&&sortDirection=='asc'">^</div>
+                <div *ngIf="sortField=='name'&&sortDirection=='desc'">_</div>
+              </th>
+              <th (click)="setOrder('body')">Body</th>
+              <th (click)="setOrder('labels')">Labels</th>
+              <th (click)="setOrder('visible')">Visible</th>
+              <th (click)="setOrder('datetime')">Datetime</th>
+              <th (click)="setOrder('user.id')">User</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of responseFromServer?.content">
+              <td>{{user.id}}</td>
+              <td>{{user.name}}</td>
+              <td>{{user.surname}}</td>
+              <td>{{user.lastname}}</td>
+              <td>{{user.email}}</td>            
+              <td (click)="setFilterByUsertype(user.id)">
+                {{user.id}}-{{user.name}}
+              </td>
+              <td>
+                <div class="btn-group" role="group" aria-label="Herramientas">
+                  <button class="btn btn-sm btn-primary" [routerLink]="['/admin/user/view',user.id]">
+                    ver
+                  </button>
+                  <button class="btn btn-sm btn-warning" [routerLink]="['/admin/user/edit',user.id]">
+                    editar
+                  </button>
+                  <button class="btn btn-sm btn-danger" [routerLink]="['/admin','user','remove',user.id]">
+                    borrar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
